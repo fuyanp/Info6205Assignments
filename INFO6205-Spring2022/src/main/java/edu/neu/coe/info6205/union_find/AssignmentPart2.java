@@ -5,6 +5,7 @@
  */
 package edu.neu.coe.info6205.union_find;
 
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -36,14 +37,16 @@ public class AssignmentPart2 {
         int cnt=0;
          UF h = new UF_HWQUPC(n);
          Random random=new Random();
+         HashMap<Integer,Integer> pairs=new HashMap<>();
          while(h.components()>1){
              
              int s1=random.nextInt(n);
              int s2=random.nextInt(n);
-             
+             if(!((pairs.containsKey(s1) && s2 == pairs.get(s1)) || (pairs.containsKey(s2) && s1 == pairs.get(s2)))){
+                 pairs.put(s1, s2);
                  h.connect(s1, s2);
                  cnt++;
-             
+             }
          }
         return cnt;
     }
