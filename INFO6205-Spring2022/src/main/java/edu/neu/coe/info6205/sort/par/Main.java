@@ -19,25 +19,31 @@ public class Main {
     public static void main(String[] args) {
         processArgs(args);
         System.out.println("Degree of parallelism: " + ForkJoinPool.getCommonPoolParallelism());
+        ForkJoinPool myPool = new ForkJoinPool(64);
+        
         Random random = new Random();
+        //int[] array = new int[random.nextInt(60)*100000 + 2000000];
         int[] array = new int[2000000];
         ArrayList<Long> timeList = new ArrayList<>();
-        for (int j = 50; j < 100; j++) {
-            ParSort.cutoff = 10000 * (j + 1);
+        for (int j = 80; j < 150; j++) {
+        //int j=100;
+        //while(j<=400){
+            ParSort.cutoff = 20000 * (j + 1);
+            //ParSort.cutoff = 20000 * j;
             // for (int i = 0; i < array.length; i++) array[i] = random.nextInt(10000000);
             long time;
             long startTime = System.currentTimeMillis();
             for (int t = 0; t < 10; t++) {
                 for (int i = 0; i < array.length; i++) array[i] = random.nextInt(10000000);
-                ParSort.sort(array, 0, array.length);
+                ParSort.sort(array, 0, array.length,myPool);
             }
             long endTime = System.currentTimeMillis();
             time = (endTime - startTime);
             timeList.add(time);
 
 
-            System.out.println("cutoff：" + (ParSort.cutoff) + "\t\t10times Time:" + time + "ms");
-
+            System.out.println("array size: "+array.length+"\t\tcutoff：" + (ParSort.cutoff) + "\t\t10times Time:" + time + "ms");
+            //j+=20;
         }
         try {
             FileOutputStream fis = new FileOutputStream("./src/result.csv");
@@ -64,7 +70,7 @@ public class Main {
     }
 
     private static String[] processArg(String[] xs) {
-        String[] result = new String[0];
+        String[] result = new String[xs.length];
         System.arraycopy(xs, 2, result, 0, xs.length - 2);
         processCommand(xs[0], xs[1]);
         return result;
